@@ -1,11 +1,8 @@
 "use client";
 
-import { useCurrentUser } from "@/hooks/query/use-current-user";
+import { useRequiredUser } from "@/hooks/query/use-current-user";
 
 export default function DashboardPage() {
-  const { data: user } = useCurrentUser();
-  if (!user) {
-    return null;
-  }
+  const user = useRequiredUser();
   return <div>{user.email}</div>;
 }

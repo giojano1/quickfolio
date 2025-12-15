@@ -10,9 +10,12 @@ export function useCurrentUser(): UseQueryResult<UserResponse, Error> {
     queryFn: () => {
       throw new Error("User data should be prefetched on server");
     },
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
-    retry: 1,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+    retry: 3, // Retry up to 3 times for better resilience
+    retryDelay: (attemptIndex) => {
+      return Math.min(1000 * 2 ** attemptIndex, 30000);
+    },
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
   });
