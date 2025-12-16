@@ -1,3 +1,4 @@
+import Header from "@/components/common/layout/header/header";
 import { getQueryClient } from "@/lib/query/client";
 import { queryKeys } from "@/lib/query/keys";
 import { getUserServer } from "@/server/user/get-user";
@@ -23,6 +24,13 @@ export default async function DashboardLayout({
   // Dehydrate the cache state to send to the client
   const dehydratedState = dehydrate(queryClient);
   return (
-    <HydrationBoundary state={dehydratedState}>{children}</HydrationBoundary>
+    <HydrationBoundary state={dehydratedState}>
+      <main className="flex flex-col h-svh">
+        <Header />
+        <div className="flex-1 flex h-full min-h-0 overflow-y-auto">
+          {children}
+        </div>
+      </main>
+    </HydrationBoundary>
   );
 }
