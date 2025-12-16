@@ -12,13 +12,10 @@ import { APP_ROUTES } from "@/constants/routes";
 import { useRequiredUser } from "@/hooks/query/use-current-user";
 import { LogOutIcon } from "lucide-react";
 import { signOut } from "next-auth/react";
-import { useState } from "react";
 
 export default function UserBar() {
   const user = useRequiredUser();
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const handleLogout = async () => {
-    setIsLoggingOut(true);
     try {
       await signOut({
         callbackUrl: APP_ROUTES.HOME,
@@ -26,7 +23,6 @@ export default function UserBar() {
       });
     } catch (error) {
       console.error("Logout error:", error);
-      setIsLoggingOut(false);
     }
   };
   return (
