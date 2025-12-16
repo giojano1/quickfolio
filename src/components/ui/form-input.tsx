@@ -1,0 +1,79 @@
+import { InputProps } from "@/types/component.types";
+
+import { cn } from "@/lib/utils";
+import React from "react";
+import { FieldError, FieldValues } from "react-hook-form";
+import { Input } from "./input";
+import ValidationError from "./validation-error";
+
+export default function FormInput<T extends FieldValues>({
+  label,
+  name,
+  placeholder,
+  register,
+  validation,
+  onChange,
+  onFocus,
+  onBlur,
+  onClick,
+  value,
+  errors,
+  type = "text",
+  readOnly,
+  disabled,
+  className,
+  required,
+}: InputProps<T>) {
+  const errorMessage = errors ? (errors[name] as FieldError)?.message : "";
+  const errorId = errorMessage ? `${name}-error` : undefined;
+
+  // react hook form register
+  const registerField = register ? register(name, validation) : undefined;
+
+  // chain events correctly
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    registerField?.onChange?.(e);
+    onChange?.(e);
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    registerField?.onBlur?.(e);
+    onBlur?.(e);
+  };
+  return (
+    <div className="relative w-full">
+      {/* label */}
+      <label
+        htmlFor={name}
+        className="text-default mb-1.5 block text-sm font-medium"
+      >
+        {label}
+        {required && <span className="ml-px text-red-500">*</span>}
+      </label>
+      {/* input */}
+      <div className="relative w-full" onClick={onClick}>
+        <Input
+          id={name}
+          type={type}
+          placeholder={placeholder}
+          readOnly={readOnly}
+          value={value}
+          aria-invalid={!!errorMessage}
+          aria-describedby={errorId}
+          className={cn(
+            errorMessage && "border-error-base",
+            className,
+            "bg-white"
+          )}
+          {...registerField}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          onFocus={onFocus}
+          disabled={disabled}
+        />
+      </div>
+      {/* Error message */}
+      {errorMessage && <ValidationError errorMessage={errorMessage} />}
+    </div>
+  );
+}
