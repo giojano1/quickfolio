@@ -1,12 +1,12 @@
-import { InputProps } from "@/types/component.types";
+import { TextareaProps } from "@/types/component.types";
 
 import { cn } from "@/lib/utils";
 import React from "react";
 import { FieldError, FieldValues } from "react-hook-form";
-import { Input } from "./input";
+import { Textarea } from "./textarea";
 import ValidationError from "./validation-error";
 
-export default function FormInput<T extends FieldValues>({
+export default function FormTextarea<T extends FieldValues>({
   label,
   name,
   placeholder,
@@ -18,12 +18,11 @@ export default function FormInput<T extends FieldValues>({
   onClick,
   value,
   errors,
-  type = "text",
   readOnly,
   disabled,
   className,
   required,
-}: InputProps<T>) {
+}: TextareaProps<T>) {
   const errorMessage = errors ? (errors[name] as FieldError)?.message : "";
   const errorId = errorMessage ? `${name}-error` : undefined;
 
@@ -31,12 +30,12 @@ export default function FormInput<T extends FieldValues>({
   const registerField = register ? register(name, validation) : undefined;
 
   // chain events correctly
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     registerField?.onChange?.(e);
     onChange?.(e);
   };
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+  const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
     registerField?.onBlur?.(e);
     onBlur?.(e);
   };
@@ -50,11 +49,10 @@ export default function FormInput<T extends FieldValues>({
         {label}
         {required && <span className="ml-px text-red-500">*</span>}
       </label>
-      {/* input */}
+      {/* textarea */}
       <div className="relative w-full" onClick={onClick}>
-        <Input
+        <Textarea
           id={name}
-          type={type}
           placeholder={placeholder}
           readOnly={readOnly}
           value={value}

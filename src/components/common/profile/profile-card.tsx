@@ -9,7 +9,7 @@ export default function ProfileCard({
   title: string;
 }) {
   return (
-    <Card className="w-full">
+    <Card className="w-full bg-muted">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>
