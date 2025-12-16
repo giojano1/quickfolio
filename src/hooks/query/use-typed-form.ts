@@ -13,7 +13,7 @@ export function useTypedForm<TFieldValues extends FieldValues>(
 ): UseFormReturn<TFieldValues> {
   return useForm<TFieldValues>({
     resolver: zodResolver(schema),
-    mode: "onTouched",
+    mode: "onChange",
     ...options,
   });
 }

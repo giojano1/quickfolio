@@ -6,18 +6,23 @@ import FormTextarea from "@/components/ui/form-textarea";
 import ProfileCard from "../profile-card";
 import FormWrapper from "@/components/ui/form-wrapper";
 import { useTypedForm } from "@/hooks/query/use-typed-form";
-import { defaultProfileValues, profileSchema, ProfileFormData } from "@/schemas/profile.schema";
+import {
+  defaultProfileValues,
+  profileSchema,
+  ProfileFormData,
+} from "@/schemas/profile.schema";
 import { useUpdateProfile } from "@/hooks/query/use-update-profile";
 import { useCurrentUser } from "@/hooks/query/use-current-user";
+import { usePreviewProfile } from "@/hooks/query/use-preview-profile";
+import { useFormPreview } from "@/hooks/use-form-preview";
 
 export default function PersonalDetailsCard() {
-  // Get current user data
   const { data: user } = useCurrentUser();
 
-  // Initialize mutation
   const { mutate: updateProfile, isPending } = useUpdateProfile();
 
-  // Initialize form
+  const { updatePreview } = usePreviewProfile();
+
   const formMethods = useTypedForm(profileSchema, {
     defaultValues: defaultProfileValues,
   });
@@ -37,7 +42,14 @@ export default function PersonalDetailsCard() {
     }
   }, [user, reset]);
 
-  // Handle form submission
+  // Set up live preview with 300ms debounce
+  useFormPreview({
+    formMethods,
+    onPreview: updatePreview,
+    debounceMs: 300,
+    schema: profileSchema,
+  });
+
   const handleSubmit = (data: ProfileFormData) => {
     updateProfile(data);
   };
