@@ -1,8 +1,11 @@
-"use client";
-
-import { useRequiredUser } from "@/hooks/query/use-current-user";
+import Preview from "@/components/common/preview/preview";
+import Profile from "@/components/common/profile/profile";
 
 export default function DashboardPage() {
-  const user = useRequiredUser();
-  return <div>{user.email}</div>;
+  return (
+    <section className="w-full flex justify-between">
+      <Profile />
+      <Preview />
+    </section>
+  );
 }
