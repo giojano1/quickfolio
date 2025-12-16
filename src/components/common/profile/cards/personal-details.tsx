@@ -1,30 +1,56 @@
 "use client";
+
+import { useEffect } from "react";
 import FormInput from "@/components/ui/form-input";
 import FormTextarea from "@/components/ui/form-textarea";
 import ProfileCard from "../profile-card";
 import FormWrapper from "@/components/ui/form-wrapper";
 import { useTypedForm } from "@/hooks/query/use-typed-form";
-import { defaultProfileValues, profileSchema } from "@/schemas/profile.schema";
+import { defaultProfileValues, profileSchema, ProfileFormData } from "@/schemas/profile.schema";
+import { useUpdateProfile } from "@/hooks/query/use-update-profile";
+import { useCurrentUser } from "@/hooks/query/use-current-user";
 
 export default function PersonalDetailsCard() {
+  // Get current user data
+  const { data: user } = useCurrentUser();
+
+  // Initialize mutation
+  const { mutate: updateProfile, isPending } = useUpdateProfile();
+
+  // Initialize form
   const formMethods = useTypedForm(profileSchema, {
     defaultValues: defaultProfileValues,
   });
-  const { register, formState } = formMethods;
 
-  const handleSubmit = (data: any) => {
-    console.log(handleSubmit);
+  const { register, formState, reset } = formMethods;
+
+  // Populate form with user data when available
+  useEffect(() => {
+    if (user) {
+      reset({
+        fullName: user.fullName || "",
+        title: user.title || "",
+        bio: user.bio || "",
+        location: user.location || "",
+        website: user.website || "",
+      });
+    }
+  }, [user, reset]);
+
+  // Handle form submission
+  const handleSubmit = (data: ProfileFormData) => {
+    updateProfile(data);
   };
-  const isPending = false;
+
   return (
     <ProfileCard title="Personal Details">
       <FormWrapper
         onSubmit={handleSubmit}
         formMethods={formMethods}
         ariaLabel="Personal Details Form"
-        submitButtonLabel="Save"
+        submitButtonLabel="Save Changes"
         submitButtonLoadingLabel="Saving..."
-        isPending={false}
+        isPending={isPending}
       >
         <div className="flex items-center gap-4">
           <FormInput
@@ -59,7 +85,7 @@ export default function PersonalDetailsCard() {
         </div>
         <div className="flex items-center gap-4">
           <FormInput
-            placeholder=""
+            placeholder="San Francisco, CA"
             label="Location"
             name="location"
             register={register}
@@ -67,7 +93,7 @@ export default function PersonalDetailsCard() {
             disabled={isPending}
           />
           <FormInput
-            placeholder=""
+            placeholder="https://yourwebsite.com"
             label="Website"
             name="website"
             register={register}
