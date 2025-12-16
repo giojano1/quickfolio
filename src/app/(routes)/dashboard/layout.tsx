@@ -3,6 +3,9 @@ import { queryKeys } from "@/lib/query/keys";
 import { getUserServer } from "@/server/user/get-user";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
+// Force dynamic rendering for this route since it uses authentication
+export const dynamic = "force-dynamic";
+
 export default async function DashboardLayout({
   children,
 }: {

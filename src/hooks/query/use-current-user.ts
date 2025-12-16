@@ -12,7 +12,7 @@ export function useCurrentUser(): UseQueryResult<UserResponse, Error> {
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
-    retry: 3, // Retry up to 3 times for better resilience
+    retry: 3,
     retryDelay: (attemptIndex) => {
       return Math.min(1000 * 2 ** attemptIndex, 30000);
     },
