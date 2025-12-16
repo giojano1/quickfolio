@@ -39,36 +39,28 @@ export function useUpdateProfile() {
       return { previousUser };
     },
 
-    // ON SUCCESS: Show success toast
-    onSuccess: () => {
-      toast.success("Profile updated successfully", {
-        description: "Your personal details have been saved.",
-      });
+    // ON SUCCESS: Update cache with server response and show toast
+    onSuccess: (data) => {
+      // Update cache with actual server response
+      queryClient.setQueryData(queryKeys.user.me(), data);
+
+      toast.success("Profile updated successfully");
     },
 
     // ON ERROR: Rollback to previous state and show error toast
     onError: (error, _variables, context) => {
       // Rollback to previous value
       if (context?.previousUser) {
-        queryClient.setQueryData(
-          queryKeys.user.me(),
-          context.previousUser
-        );
+        queryClient.setQueryData(queryKeys.user.me(), context.previousUser);
       }
 
       // Show error toast
-      const errorMessage = error instanceof Error
-        ? error.message
-        : "Failed to update profile";
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to update profile";
 
       toast.error("Failed to update profile", {
         description: errorMessage,
       });
-    },
-
-    // ALWAYS: Ensure we refetch on settle to sync with server
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.user.me() });
     },
   });
 }

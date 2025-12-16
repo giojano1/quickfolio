@@ -20,7 +20,7 @@ export const profileSchema = z.object({
     .max(100, "Location must be at most 100 characters")
     .trim()
     .optional(),
-  website: z.url("Invalid URL").trim().optional(),
+  website: z.string().trim().optional(),
 });
 
 export type ProfileFormData = z.infer<typeof profileSchema>;
