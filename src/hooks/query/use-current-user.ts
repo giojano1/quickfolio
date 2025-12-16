@@ -7,8 +7,15 @@ import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 export function useCurrentUser(): UseQueryResult<UserResponse, Error> {
   return useQuery<UserResponse, Error>({
     queryKey: queryKeys.user.me(),
-    queryFn: () => {
-      throw new Error("User data should be prefetched on server");
+    queryFn: async () => {
+      const response = await fetch("/api/user/me");
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to fetch user data");
+      }
+
+      return response.json();
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
